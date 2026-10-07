@@ -1,0 +1,18 @@
+{
+  "appId": "in.trimuryacorporation.participant",
+  "appName": "Trimurya Participant",
+  "webDir": "dist-participant",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "backgroundColor": "#f5f6fb",
+    "allowMixedContent": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true
+    }
+  }
+}

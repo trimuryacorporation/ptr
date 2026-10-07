@@ -1,0 +1,6 @@
+API listening on 5000
+GET /api/projects 304 - - 68.443 ms
+GET /api/analytics 304 - - 57.364 ms
+GET /api/reviews 304 - - 53.902 ms
+GET /api/projects 304 - - 49.966 ms
+GET /api/analytics 304 - - 53.608 ms

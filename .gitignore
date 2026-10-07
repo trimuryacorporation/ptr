@@ -1,0 +1,12 @@
+﻿node_modules
+dist
+.env
+coverage
+uploads
+
+.android-tools/
+.gradle/
+frontend/dist-participant/
+frontend/android/.gradle/
+frontend/android/local.properties
+frontend/android/**/build/

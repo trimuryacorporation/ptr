@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Trimurya Participant</string>
+    <string name="title_activity_main">Trimurya Participant</string>
+    <string name="package_name">in.trimuryacorporation.participant</string>
+    <string name="custom_url_scheme">in.trimuryacorporation.participant</string>
+</resources>

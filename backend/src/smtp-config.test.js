@@ -1,0 +1,5 @@
+﻿import {test} from 'node:test';import assert from 'node:assert/strict';import {smtpSecurity,deliveryErrorMessage} from './smtp-config.js';
+test('port 587 overrides saved SSL flag and requires STARTTLS',()=>assert.deepEqual(smtpSecurity({SMTP_PORT:587,SMTP_SECURE:true}),{secure:false,requireTLS:true}));
+test('port 465 uses implicit TLS even when SSL flag is false',()=>assert.deepEqual(smtpSecurity({SMTP_PORT:'465',SMTP_SECURE:false}),{secure:true,requireTLS:false}));
+test('custom ports preserve explicit TLS setting',()=>assert.deepEqual(smtpSecurity({SMTP_PORT:2525,SMTP_SECURE:'true'}),{secure:true,requireTLS:false}));
+test('SMTP diagnostics identify failures without exposing raw provider secrets',()=>{const message=deliveryErrorMessage({code:'EAUTH',response:'secret-password'},'email');assert.match(message,/authentication failed/);assert.ok(!message.includes('secret-password'));assert.match(deliveryErrorMessage({code:'ENOTFOUND'},'email'),/hostname/);assert.match(deliveryErrorMessage({code:'ETLS'},'email'),/587 uses STARTTLS/)});

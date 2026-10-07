@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+// Compatibility policy reference test. Service applies the same project/language/dialect/type/gender conditions before a lock is created.
+test('same-gender pairing rule requires equal gender',()=>{const compatible=(a,b,rule)=>a.project===b.project&&a.language===b.language&&a.dialect===b.dialect&&a.type===b.type&&(rule==='any'||(rule==='same'&&a.gender===b.gender)||(rule==='different'&&a.gender!==b.gender));const a={project:'p',language:'Hindi',dialect:'Std',type:'dual',gender:'female'};assert.equal(compatible(a,{...a,gender:'female'},'same'),true);assert.equal(compatible(a,{...a,gender:'male'},'same'),false);assert.equal(compatible(a,{...a,gender:'male'},'different'),true);});

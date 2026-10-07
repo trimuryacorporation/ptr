@@ -1,0 +1,1 @@
+const native=!!window.Capacitor?.isNativePlatform?.();const saved=native?localStorage.getItem('participantServer'):null;export const serverURL=saved||import.meta.env.VITE_SOCKET_URL||'http://localhost:5000';export const apiURL=saved?saved+'/api':import.meta.env.VITE_API_URL||'http://localhost:5000/api';export const nativeApp=native;

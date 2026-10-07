@@ -1,0 +1,1 @@
+import {defineConfig} from 'vite';import react from '@vitejs/plugin-react';export default defineConfig(({mode})=>({plugins:[react(),...(mode==='participant'?[{name:'participant-entry',transformIndexHtml:{order:'pre',handler:html=>html.replace('/src/main.jsx','/src/ParticipantApp.jsx')}}]:[])],build:{outDir:mode==='participant'?'dist-participant':'dist'}}));
