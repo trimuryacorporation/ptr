@@ -1,9 +1,14 @@
 import {smtpSecurity} from './smtp-config.js';
 import nodemailer from 'nodemailer';
-export function deliveryConfigured(channel,config=process.env){return channel==='email'?!!(config.SMTP_HOST&&config.SMTP_FROM&&config.SMTP_USER&&config.SMTP_PASS):!!(config.TWILIO_ACCOUNT_SID&&config.TWILIO_AUTH_TOKEN&&config.TWILIO_FROM_NUMBER)}
+export function deliveryConfigured(channel,config=process.env){return channel==='email'?(config.EMAIL_PROVIDER==='resend'?!!(config.RESEND_API_KEY&&config.SMTP_FROM):!!(config.SMTP_HOST&&config.SMTP_FROM&&config.SMTP_USER&&config.SMTP_PASS)):!!(config.TWILIO_ACCOUNT_SID&&config.TWILIO_AUTH_TOKEN&&config.TWILIO_FROM_NUMBER)}
 export async function deliverOtp(channel,to,code,config=process.env){return deliverMessage(channel,to,`Your Trimurya login code is ${code}. It expires in 5 minutes. Do not share this code.`,'Your Trimurya login code',config)}
 export async function deliverMessage(channel,to,text,subject,config=process.env){
  if(channel==='email'){
+    if(config.EMAIL_PROVIDER==='resend'){
+      const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+config.RESEND_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({from:config.SMTP_FROM,to:[to],subject,text}),signal:AbortSignal.timeout(15000)});
+      if(!response.ok){const error=new Error('Email API rejected delivery');error.code=response.status===401?'EMAIL_API_AUTH':response.status===403?'EMAIL_API_SENDER':'EMAIL_API_REJECTED';throw error}
+      const result=await response.json();if(!result.id){const error=new Error('Email API did not confirm delivery');error.code='EMAIL_API_REJECTED';throw error}return;
+    }
   const transporter=nodemailer.createTransport({host:config.SMTP_HOST,port:Number(config.SMTP_PORT||587),...smtpSecurity(config),auth:{user:config.SMTP_USER,pass:config.SMTP_PASS},connectionTimeout:10000,socketTimeout:15000});
   await transporter.sendMail({from:config.SMTP_FROM,to,subject,text});return;
  }
