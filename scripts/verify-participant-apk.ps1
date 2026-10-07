@@ -6,6 +6,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 $archive = [System.IO.Compression.ZipFile]::OpenRead($apkPath)
 try {
  $javascript = ''
+ if (-not $archive.GetEntry('assets/public/images/trimurya-logo.svg')) { throw 'Corporation logo is missing from APK.' }
  foreach ($entry in $archive.Entries) {
   if ($entry.FullName.StartsWith('assets/public/assets/') -and $entry.FullName.EndsWith('.js')) {
    $reader = New-Object System.IO.StreamReader($entry.Open())

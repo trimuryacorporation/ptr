@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 470" role="img" aria-labelledby="title desc">
+  <title id="title">Trimurya Corporation</title>
+  <desc id="desc">Trimurya Corporation logo with Create, Preserve, Transform tagline.</desc>
+  <defs>
+    <linearGradient id="navyText" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#061a54"/>
+      <stop offset="0.42" stop-color="#082a78"/>
+      <stop offset="0.72" stop-color="#061d5c"/>
+      <stop offset="1" stop-color="#020c2e"/>
+    </linearGradient>
+    <linearGradient id="goldText" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f2b218"/>
+      <stop offset="0.28" stop-color="#b77900"/>
+      <stop offset="0.55" stop-color="#f7cf64"/>
+      <stop offset="0.78" stop-color="#9f6400"/>
+      <stop offset="1" stop-color="#6f4300"/>
+    </linearGradient>
+    <linearGradient id="orangeText" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#ff7a12"/>
+      <stop offset="1" stop-color="#f15a00"/>
+    </linearGradient>
+    <filter id="softDepth" x="-4%" y="-8%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="2" stdDeviation="1.2" flood-color="#03113e" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <g fill="none" fill-rule="evenodd">
+    <text
+      x="800"
+      y="188"
+      fill="url(#navyText)"
+      filter="url(#softDepth)"
+      font-family="Georgia, 'Times New Roman', serif"
+      font-size="168"
+      font-weight="700"
+      letter-spacing="21"
+      text-anchor="middle">TRIMURYA</text>
+
+    <path d="M1292 150h36l-18 26-18-26z" fill="url(#goldText)"/>
+    <path d="M1298 157h24l-12 18-12-18z" fill="#7a4b00" opacity=".55"/>
+
+    <path d="M49 275h196v12H49l118-6z" fill="url(#goldText)"/>
+    <path d="M1355 275h196l-118 6 118 6h-196z" fill="url(#goldText)"/>
+
+    <text
+      x="800"
+      y="312"
+      fill="url(#goldText)"
+      filter="url(#softDepth)"
+      font-family="Georgia, 'Times New Roman', serif"
+      font-size="70"
+      font-weight="700"
+      letter-spacing="37"
+      text-anchor="middle">CORPORATION</text>
+
+    <text
+      x="430"
+      y="397"
+      fill="url(#orangeText)"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="39"
+      font-weight="700"
+      letter-spacing="14"
+      text-anchor="middle">CREATE</text>
+    <rect x="559" y="365" width="5" height="42" fill="#b87500"/>
+
+    <text
+      x="787"
+      y="397"
+      fill="#082b79"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="39"
+      font-weight="700"
+      letter-spacing="14"
+      text-anchor="middle">PRESERVE</text>
+    <rect x="940" y="365" width="5" height="42" fill="#696969"/>
+
+    <text
+      x="1160"
+      y="397"
+      fill="#77777a"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="39"
+      font-weight="700"
+      letter-spacing="14"
+      text-anchor="middle">TRANSFORM</text>
+  </g>
+</svg>
