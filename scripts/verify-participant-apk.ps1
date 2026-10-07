@@ -16,6 +16,8 @@ try {
  foreach ($adminText in @('Candidate management','Operations overview','/admin/candidates','/admin/api-settings')) {
   if ($javascript.Contains($adminText)) { throw ('Admin content found in APK: ' + $adminText) }
  }
+ if ($javascript.Contains('Download recording')) { throw 'Participant recording download is still present.' }
+ if (-not $javascript.Contains('Submit recording')) { throw 'Recording submission is missing.' }
  if (-not $javascript.Contains('Connect your workspace')) { throw 'Participant connection setup is missing.' }
  Write-Output 'APK contents verified: participant entry only, no admin routes or environment files.'
 } finally { $archive.Dispose() }

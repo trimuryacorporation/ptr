@@ -1,0 +1,22 @@
+[
+  {
+    "AllowedOrigins": [
+      "https://ptr.trimuryacorporation.in",
+      "http://localhost:5173",
+      "https://localhost",
+      "http://localhost"
+    ],
+    "AllowedMethods": [
+      "PUT",
+      "GET",
+      "HEAD"
+    ],
+    "AllowedHeaders": [
+      "Content-Type"
+    ],
+    "ExposeHeaders": [
+      "ETag"
+    ],
+    "MaxAgeSeconds": 3600
+  }
+]
