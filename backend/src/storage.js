@@ -6,3 +6,5 @@ export async function signedUpload(key,contentType){const {bucket,client}=await 
 export async function signedDownload(key){const {bucket,client}=await storage();return getSignedUrl(client,new GetObjectCommand({Bucket:bucket,Key:key}),{expiresIn:900})}
 export async function uploadedObject(key){const {bucket,client}=await storage();return client.send(new HeadObjectCommand({Bucket:bucket,Key:key}))}
 export async function testStorage(config){if(!r2Configured(config))throw Error('Save complete R2 settings before testing.');const {bucket,options}=storageOptions(config);await new S3Client(options).send(new HeadBucketCommand({Bucket:bucket}))}
+
+export async function uploadRecording(key,contentType,body,size,signal){const {bucket,client}=await storage();try{return await client.send(new PutObjectCommand({Bucket:bucket,Key:key,ContentType:contentType,ContentLength:size,Body:body}),{abortSignal:signal})}finally{client.destroy()}}
