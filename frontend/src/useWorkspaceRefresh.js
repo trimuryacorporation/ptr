@@ -1,0 +1,2 @@
+import {useEffect,useRef} from 'react';
+export default function useWorkspaceRefresh(load){const latest=useRef(load);latest.current=load;useEffect(()=>{const run=()=>Promise.resolve().then(()=>latest.current());const refresh=event=>event.detail.tasks.push(run());run().catch(()=>{});window.addEventListener('workspace:refresh',refresh);return()=>window.removeEventListener('workspace:refresh',refresh)},[])}
