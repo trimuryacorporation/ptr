@@ -51,3 +51,9 @@ If the browser reports an R2 preflight CORS error followed by `Cannot PUT /api/s
 4. Keep both recording screens open and retry Submit recording after deployment. The client retains the audio Blob on failure; refreshing or closing a screen loses that unsent recording.
 
 CORS reference: https://developers.cloudflare.com/r2/buckets/cors/
+
+## Recording audio formats
+
+New submissions are normalized and verified as Ogg Opus (`.opus`) in R2 before they enter review. Browsers prefer Opus capture; browsers requiring MP4 are converted on the server. The original upload remains available for submission retries. Admin and Super Admin can choose MP3 (128 kbps) or WAV (16-bit PCM) for each speaker from recording details and Quality reviews. Downloads convert the actual audio and preserve separate speaker tracks. Existing stored recordings can also be downloaded in either format.
+
+Install backend dependencies during deployment: `ffmpeg-static` supplies FFmpeg on Windows and standard Linux hosts. The Alpine Docker image installs system FFmpeg and sets `FFMPEG_PATH=/usr/bin/ffmpeg`; other hosts can set `FFMPEG_PATH` to an installed binary. Audio processing uses temporary disk files and permits two concurrent conversions per backend process. Deploy both backend and frontend to enable these changes.
