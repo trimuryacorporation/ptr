@@ -6,7 +6,7 @@ import {Mic,LayoutDashboard,Users,ClipboardCheck,LogOut,Menu,X,ChevronRight,Shie
 const sections=[
  {label:'OVERVIEW',links:[{to:'/',label:'Dashboard',icon:LayoutDashboard}]},
  {label:'PEOPLE & TEAMS',links:[{to:'/admin/candidates',label:'Candidates',icon:Users},{to:'/admin/vendors',label:'Vendors',icon:Users},{to:'/admin/quality-team',label:'Quality team',icon:ClipboardCheck}]},
- {label:'CONTENT LIBRARY',links:[{to:'/admin/topics',label:'Topics',icon:FileText},{to:'/admin/scripts',label:'Scripts',icon:FileText}]},
+ {label:'CONTENT LIBRARY',links:[{to:'/admin/projects',label:'Projects, languages & dialects',icon:FileText},{to:'/admin/topics',label:'Topics',icon:FileText},{to:'/admin/scripts',label:'Scripts',icon:FileText}]},
  {label:'QUALITY',links:[{to:'/admin/reviews',label:'Quality reviews',icon:ClipboardCheck}]},
  {label:'SETTINGS & ACCESS',links:[{to:'/admin/access-control',label:'Access control',icon:ShieldCheck},{to:'/admin/api-settings',label:'API Settings',icon:Settings,superAdminOnly:true}]}
 ];

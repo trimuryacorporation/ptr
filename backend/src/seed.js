@@ -1,3 +1,4 @@
+import {connectDatabase} from './database.js';
 import dotenv from 'dotenv';
 import {fileURLToPath} from 'node:url';
 import dns from 'node:dns';
@@ -7,7 +8,7 @@ import {User,Project,Script} from './models.js';
 dotenv.config({path:fileURLToPath(new URL('../../.env',import.meta.url))});dotenv.config();
 if(process.env.DNS_SERVERS)dns.setServers(process.env.DNS_SERVERS.split(',').map(s=>s.trim()).filter(Boolean));
 try{
- await mongoose.connect(process.env.MONGO_URI||'mongodb://localhost:27017/trimurya',{serverSelectionTimeoutMS:15000});
+ await connectDatabase();
  const passwordHash=await bcrypt.hash('Kunu@123',12);
  for(const account of [{fullName:'Trimurya Admin',email:'admin@trimurya.local',mobile:'0000000000',role:'admin'},{fullName:'Trimurya Super Admin',email:'superadmin@trimurya.local',mobile:'0000000001',role:'super_admin'}]){
   await User.findOneAndUpdate({email:account.email},{$set:{...account,passwordHash,status:'verified',refreshTokens:[]},$unset:{resetToken:1,resetExpires:1}},{upsert:true,runValidators:true,setDefaultsOnInsert:true});
