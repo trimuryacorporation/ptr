@@ -1,5 +1,6 @@
+import {access} from './access-control.js';
 import express from 'express';import {z} from 'zod';import {Topic} from './models.js';import {auth} from './auth.js';import {topicKey} from './topics.js';const router=express.Router();
-router.get('/topics',auth(),async(req,res)=>res.json(await Topic.find({enabled:true}).sort({name:1})));
+router.get('/topics',...access('topics.read',['candidate','admin']),async(req,res)=>res.json(await Topic.find({enabled:true}).sort({name:1})));
 router.get('/admin/topics',auth(['admin']),async(req,res)=>res.json(await Topic.find().sort({name:1})));
 router.post('/admin/topics',auth(['admin']),async(req,res)=>{const {name}=z.object({name:z.string().trim().min(2).max(100)}).parse(req.body);try{res.status(201).json(await Topic.create({name,key:topicKey(name),enabled:true}))}catch(error){if(error.code===11000)return res.status(409).json({message:'This topic already exists.'});throw error}});
 router.patch('/admin/topics/:id',auth(['admin']),async(req,res)=>{if(!/^[a-f\d]{24}$/i.test(req.params.id))return res.sendStatus(400);const {enabled}=z.object({enabled:z.boolean()}).parse(req.body);const topic=await Topic.findByIdAndUpdate(req.params.id,{$set:{enabled}},{new:true,runValidators:true});if(!topic)return res.sendStatus(404);res.json(topic)});export default router;

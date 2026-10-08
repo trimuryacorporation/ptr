@@ -20,6 +20,10 @@ try {
  if ($javascript.Contains('Download recording')) { throw 'Participant recording download is still present.' }
  if (-not $javascript.Contains('Submit recording')) { throw 'Recording submission is missing.' }
  if (-not $javascript.Contains('Connect your workspace')) { throw 'Participant connection setup is missing.' }
- Write-Output 'APK contents verified: participant entry only, no admin routes or environment files.'
+ foreach ($requiredText in @('profile-vendor-code','/me/vendor','OTP expires in','/auth/otp/request','/audio')) {
+  if (-not $javascript.Contains($requiredText)) { throw ('Latest participant feature missing from APK: ' + $requiredText) }
+ }
+ if ($javascript.Contains('Your candidate account is linked to this vendor.')) { throw 'Linked vendor section is still on participant dashboard.' }
+ Write-Output 'APK contents verified: latest vendor profile linking, OTP timer and audio submission; participant entry only; no environment files.'
 } finally { $archive.Dispose() }
 Get-FileHash -LiteralPath $apkPath -Algorithm SHA256 | Select-Object Hash,Path

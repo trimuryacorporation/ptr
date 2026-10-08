@@ -6,9 +6,9 @@ import {readFile,access} from 'node:fs/promises';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import {convertAudio} from './audio-conversion.js';
-import {normalizeRecording} from './storage.js';
+import {normalizeRecording,uploadOpus} from './storage.js';
 import {createRecordingDownloadRouter} from './recording-download-routes.js';
-import {RecordingFile,RecordingSession} from './models.js';
+import {User,RecordingFile,RecordingSession} from './models.js';
 process.env.JWT_ACCESS_SECRET='audio-format-test';
 function tone(){const samples=4800,buffer=Buffer.alloc(44+samples*2);buffer.write('RIFF');buffer.writeUInt32LE(buffer.length-8,4);buffer.write('WAVEfmt ',8);buffer.writeUInt32LE(16,16);buffer.writeUInt16LE(1,20);buffer.writeUInt16LE(1,22);buffer.writeUInt32LE(48000,24);buffer.writeUInt32LE(96000,28);buffer.writeUInt16LE(2,32);buffer.writeUInt16LE(16,34);buffer.write('data',36);buffer.writeUInt32LE(samples*2,40);for(let i=0;i<samples;i++)buffer.writeInt16LE(Math.round(Math.sin(i*2*Math.PI*440/48000)*10000),44+i*2);return buffer}
 test('real conversion produces Ogg Opus, MP3 and PCM WAV and removes temporary files',async()=>{
@@ -25,7 +25,8 @@ test('upload normalization stores an actual .opus object and verifies cloud meta
  assert.equal(result.key,'recordings/session/user/speakerA.opus');assert.equal(result.mimeType,'audio/ogg;codecs=opus');assert.equal(result.size,uploaded.length);assert.equal(uploaded.subarray(0,4).toString(),'OggS');assert.ok(uploaded.includes(Buffer.from('OpusHead')));
  operations.uploadedObject=async()=>({ContentLength:1,ContentType:'wrong'});await assert.rejects(normalizeRecording({key:'recordings/session/user/speakerA.webm'},undefined,operations),/verification failed/);
 });
-test('Admin and Super Admin choose MP3 or WAV; other roles cannot download converted audio',async()=>{
+test('Admins and individually authorized Vendor/QA accounts download MP3/WAV; ungranted accounts are denied',async()=>{
+ const userFind=User.findById;let currentRole='vendor',grants=[];User.findById=()=>({select:async()=>({role:currentRole,status:'verified',permissions:grants})});
  const find=RecordingFile.findById,exists=RecordingSession.exists,files=RecordingFile.find;const id='aaaaaaaaaaaaaaaaaaaaaaaa';
  RecordingFile.findById=async()=>({_id:id,session:id,channel:'speakerA',key:'recordings/test.opus'});RecordingSession.exists=async()=>true;
  RecordingFile.find=()=>({select:value=>{assert.equal(value,'_id channel mimeType size');return {sort:async()=>[{_id:id,channel:'speakerA'}]}}});
@@ -34,8 +35,16 @@ test('Admin and Super Admin choose MP3 or WAV; other roles cannot download conve
  const get=(path,role)=>fetch('http://127.0.0.1:'+server.address().port+path,{headers:role?{Authorization:'Bearer '+jwt.sign({id,role},process.env.JWT_ACCESS_SECRET)}:{}});
  try{
   for(const role of [undefined,'candidate','reviewer'])assert.equal((await get('/files/'+id+'/download?format=wav',role)).status,role?403:401);
-  for(const role of ['admin','super_admin']){assert.equal((await get('/sessions/'+id+'/recording-files',role)).status,200);for(const format of ['mp3','wav']){const r=await get('/files/'+id+'/download?format='+format,role);assert.equal(r.status,200);assert.ok(r.headers.get('content-disposition').endsWith('.'+format+'"'));const bytes=Buffer.from(await r.arrayBuffer());assert.ok(bytes.length>44);if(format==='wav')assert.equal(bytes.subarray(0,4).toString(),'RIFF');else assert.equal(r.headers.get('content-type'),'audio/mpeg')}}
+  for(const role of ['admin','super_admin','vendor','reviewer']){currentRole=role;grants=['recordings.download','recordings.read'];assert.equal((await get('/sessions/'+id+'/recording-files',role)).status,200);for(const format of ['mp3','wav']){const r=await get('/files/'+id+'/download?format='+format,role);assert.equal(r.status,200);assert.ok(r.headers.get('content-disposition').endsWith('.'+format+'"'));const bytes=Buffer.from(await r.arrayBuffer());assert.ok(bytes.length>44);if(format==='wav')assert.equal(bytes.subarray(0,4).toString(),'RIFF');else assert.equal(r.headers.get('content-type'),'audio/mpeg')}}
   assert.equal((await get('/files/'+id+'/download?format=exe','admin')).status,400);
   RecordingFile.findById=async()=>null;assert.equal((await get('/files/'+id+'/download?format=mp3','admin')).status,404);
- }finally{RecordingFile.findById=find;RecordingSession.exists=exists;RecordingFile.find=files;await new Promise(r=>server.close(r))}
+ }finally{User.findById=userFind;RecordingFile.findById=find;RecordingSession.exists=exists;RecordingFile.find=files;await new Promise(r=>server.close(r))}
+});
+
+test('new uploads convert locally and write only one real Opus object to cloud storage',async()=>{
+ const writes=[];let stored;
+ const operations={uploadRecording:async(key,type,body,size)=>{const chunks=[];for await(const chunk of body)chunks.push(chunk);stored=Buffer.concat(chunks);assert.equal(stored.length,size);writes.push({key,type,size})},uploadedObject:async()=>({ContentLength:stored.length,ContentType:'audio/ogg;codecs=opus'})};
+ const result=await uploadOpus('recordings/session/user/speakerB.opus',Readable.from(tone()),undefined,operations);
+ assert.equal(writes.length,1);assert.ok(writes[0].key.endsWith('.opus'));assert.equal(result.mimeType,'audio/ogg;codecs=opus');assert.equal(stored.subarray(0,4).toString(),'OggS');assert.ok(stored.includes(Buffer.from('OpusHead')));
+ await assert.rejects(uploadOpus('recordings/session/user/speakerB.opus',Readable.from('invalid audio'),undefined,operations),/conversion failed/);assert.equal(writes.length,1);
 });

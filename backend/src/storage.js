@@ -17,3 +17,8 @@ export async function normalizeRecording(data,signal,operations={recordingStream
  const key=data.key.replace(/\.(webm|mp4|ogg|opus)$/i,'.opus');
  try{await operations.uploadRecording(key,converted.mimeType,createReadStream(converted.path),converted.size,signal);const object=await operations.uploadedObject(key);if(object.ContentLength!==converted.size||object.ContentType!==converted.mimeType)throw new Error('Opus upload verification failed');return {key,mimeType:converted.mimeType,size:converted.size}}finally{await converted.cleanup()}
 }
+
+export async function uploadOpus(key,body,signal,operations={uploadRecording,uploadedObject}){
+ const converted=await convertAudio(body,'opus',{signal});
+ try{await operations.uploadRecording(key,converted.mimeType,createReadStream(converted.path),converted.size,signal);const object=await operations.uploadedObject(key);if(object.ContentLength!==converted.size||object.ContentType!==converted.mimeType)throw new Error('Opus upload verification failed');return {key,mimeType:converted.mimeType,size:converted.size}}finally{await converted.cleanup()}
+}
