@@ -75,3 +75,9 @@ Candidate referrals: Participants may enter an optional active vendor code befor
 ## Participant APK download page
 
 The public `/download` page does not require sign-in. Its Download APK button points to `/downloads/Trimurya-Participant.apk`. The frontend `postbuild` script copies the tracked `artifacts/Trimurya-Participant.apk` into `frontend/dist/downloads`, so the website deployment contains the actual APK without duplicating it in source control. Replace that artifact when releasing a new APK, then rebuild and deploy the frontend. Vercel serves the APK as an attachment and revalidates it to avoid caching an outdated release. The build also renders the standalone download page from DownloadPage.jsx with its scoped stylesheet, keeping the direct Vercel route and React route visually identical.
+
+## Google Search setup
+
+Production builds generate indexable HTML at `/login` and `/download`, including unique titles, descriptions, canonical URLs, sharing metadata and Organization/WebPage structured data. The download page includes SoftwareApplication metadata. Only these public canonical URLs appear in `/sitemap.xml`; `/robots.txt` advertises the sitemap. The authenticated SPA defaults to noindex and private routes/APK responses have X-Robots-Tag headers. These directives control search visibility, while existing authentication controls access.
+
+After deploying the frontend to `https://ptr.trimuryacorporation.in`, verify ownership in Google Search Console, submit `https://ptr.trimuryacorporation.in/sitemap.xml`, and request indexing for `/login` and `/download` with URL Inspection. Check that the live canonical URLs, sitemap and robots.txt return the expected content rather than the SPA fallback. Do not submit private dashboard or recording URLs. Search Console ownership and submission have not been performed by these code changes; Google determines whether and when pages are indexed.

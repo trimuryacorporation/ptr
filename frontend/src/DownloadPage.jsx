@@ -15,14 +15,14 @@ export default function DownloadPage() {
       <a href="/" className="download-brand" aria-label="Trimurya Corporation home"><BrandLogo/></a>
       <span className="download-header-divider" aria-hidden="true"/>
       <span className="download-header-label">Participant workspace</span>
-      <a className="download-web-link" href="/login"><Globe size={17} aria-hidden="true"/>Open web workspace</a>
+      <a className="download-web-link" href="/login"><Globe size={17} aria-hidden="true"/><span className="download-web-desktop">Open web workspace</span><span className="download-web-mobile">Web login</span></a>
     </header>
     <main className="download-main">
       <div className="download-section-label"><span aria-hidden="true"/>APPLICATION DOWNLOAD</div>
       <section className="download-hero" aria-labelledby="download-heading">
         <div className="download-intro">
           <span className="download-platform"><Smartphone size={15} aria-hidden="true"/>FOR ANDROID</span>
-          <h1 id="download-heading">Your recording<br/>workspace.<br/><span>Ready to go.</span></h1>
+          <h1 id="download-heading">Your recording <br/>workspace. <br/><span>Ready to go.</span></h1>
           <p>Download Trimurya Participant to access your recording workspace from your Android phone.</p>
           <div className="download-corporate-line"><span aria-hidden="true"/>Built for Trimurya participants</div>
         </div>
@@ -58,6 +58,6 @@ export default function DownloadPage() {
         <ol className="download-steps">{steps.map(({icon: Icon, title, text}, index) => <li key={title}><div className="download-step-top"><span className="download-step-number">0{index + 1}</span><Icon size={23} aria-hidden="true"/></div><h3>{title}</h3><p>{text}</p></li>)}</ol>
       </section>
     </main>
-    <footer className="download-footer"><span>Trimurya Corporation</span><span>Create Â· Preserve Â· Transform</span><a href="/login">Website login</a></footer>
+    <footer className="download-footer"><span>Trimurya Corporation</span><span>Create &middot; Preserve &middot; Transform</span><a href="/login">Website login</a></footer>
   </div>;
 }
