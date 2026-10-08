@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:participant": "vite build --mode participant",
-    "android:sync": "npm run build:participant && cap sync android"
+    "android:sync": "npm run build:participant && cap sync android",
+    "postbuild": "node ../scripts/prepare-apk-download.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.2",
