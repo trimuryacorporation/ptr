@@ -40,3 +40,14 @@ Provider secrets are encrypted in MongoDB using AES-256-GCM. Set a stable `INTEG
 
 Participants are automatically marked verified after successful OTP verification, including existing pending accounts. Blocked or rejected users remain denied. Recording consent is still separate and must be explicitly given.
 # ptr
+
+## Recording upload: R2 CORS and missing backend route
+
+If the browser reports an R2 preflight CORS error followed by `Cannot PUT /api/sessions/:id/audio` (404), there are two separate deployment problems:
+
+1. In Cloudflare R2, open the recording bucket, go to Settings ? CORS policy, and apply the JSON from `frontend/public/r2-cors.json`. It permits the production origin `https://ptr.trimuryacorporation.in`, PUT uploads with Content-Type, and the local/APK origins. Keep the bucket private. Preserve any existing CORS rules needed by other applications.
+2. In Render, deploy the backend branch containing commit `7519b7a` or a newer commit with `backend/src/recording-upload-routes.js`. The API must mount this router under `/api`. Redeploying only the frontend cannot add the missing backend route.
+3. Verify an unauthenticated PUT request to `/api/sessions/aaaaaaaaaaaaaaaaaaaaaaaa/audio?size=1` responds with 401 rather than 404. This checks that the protected route exists without uploading a recording.
+4. Keep both recording screens open and retry Submit recording after deployment. The client retains the audio Blob on failure; refreshing or closing a screen loses that unsent recording.
+
+CORS reference: https://developers.cloudflare.com/r2/buckets/cors/

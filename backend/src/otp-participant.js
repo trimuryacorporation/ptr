@@ -8,7 +8,7 @@ export async function verifiedParticipant(identifier){
  if(users.length>1||(users.length===1&&!participantAllowed(users[0])))return null;
  let user=users[0];
  if(!user){
-  try{user=await User.findOneAndUpdate(query,{$setOnInsert:{...query,otpIdentity:identifier,fullName:'Participant',role:'candidate',status:'verified'}},{upsert:true,new:true,runValidators:true,setDefaultsOnInsert:true})}
+  try{user=await User.findOneAndUpdate(query,{$setOnInsert:{...query,otpIdentity:identifier,fullName:'Participant',role:'candidate',status:'verified',recordingMode:'non_script'}},{upsert:true,new:true,runValidators:true,setDefaultsOnInsert:true})}
   catch(error){if(error.code!==11000)throw error;users=await User.find(query).limit(2);if(users.length!==1)return null;user=users[0]}
  }
  if(!participantAllowed(user))return null;
