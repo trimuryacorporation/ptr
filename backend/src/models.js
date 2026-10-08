@@ -22,3 +22,6 @@ const IntegrationSettings=model('IntegrationSettings',new Schema({name:{type:Str
 export {IntegrationSettings};
 
 const Topic=model('Topic',new Schema({name:{type:String,required:true,trim:true},key:{type:String,required:true,unique:true},enabled:{type:Boolean,default:true}},options));export {Topic};
+
+const ReviewActivity=model('ReviewActivity',new Schema({session:{type:Schema.Types.ObjectId,ref:'RecordingSession',index:true},actor:{type:Schema.Types.ObjectId,ref:'User'},actorName:String,actorRole:String,location:String,action:{type:String,enum:['started','approved','rejected','revision']},startedAt:Date,durationSeconds:Number,notes:String,reason:String},options));
+export {ReviewActivity};
